@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}{{ t('book.title') }}{% endblock %}
+{% block content %}
+<section class="section narrow">
+  <h1>{{ t('book.title') }}</h1>
+  <form method="post" id="booking-form" class="wizard" novalidate
+        data-slots-url="{{ url_for('api_slots') }}"
+        data-currency="{{ t('currency') }}" data-min="{{ t('minutes') }}"
+        data-msg-none="{{ t('book.summary_none') }}" data-msg-hint="{{ t('book.slots_hint') }}"
+        data-msg-search="{{ t('book.searching') }}" data-msg-empty="{{ t('book.no_slots') }}"
+        data-msg-net="{{ t('book.net_error') }}" data-msg-service="{{ t('book.err_service') }}"
+        data-msg-date="{{ t('book.err_date') }}" data-msg-time="{{ t('book.err_time') }}">
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+    <fieldset>
+      <legend><span class="step">1</span>{{ t('book.step_service') }}</legend>
+      {% for g in groups %}
+      {% set open_group = (form.service in g.rows | map(attribute='id') | list) or (not form.service and loop.first) %}
+      <details class="svc-group" {{ 'open' if open_group }}>
+        <summary>{{ g.cat.name }}</summary>
+        <div class="choices">
+          {% for s in g.rows %}
+          <label class="choice">
+            <input type="radio" name="service" value="{{ s.id }}" data-category="{{ s.category }}"
+                   data-name="{{ L(s, 'name') }}" data-price="{{ price_label(s.price, s.price_from) }}"
+                   data-duration="{{ s.duration }}" {{ 'checked' if form.service == s.id }}>
+            <span class="choice-body"><strong>{{ L(s, 'name') }}</strong>
+              <span class="muted">{{ s.duration }} {{ t('minutes') }} · {{ price_label(s.price, s.price_from) }}</span></span>
+          </label>
+          {% endfor %}
+        </div>
+      </details>
+      {% endfor %}
+    </fieldset>
+
+    <fieldset>
+      <legend><span class="step">2</span>{{ t('book.step_master') }}</legend>
+      <div class="choices" id="masters">
+        <label class="choice">
+          <input type="radio" name="master" value="0" data-name="{{ t('book.any_master') }}" {{ 'checked' if not form.master }}>
+          <span class="choice-body"><strong>{{ t('book.any_master') }}</strong><span class="muted">{{ t('book.any_master_hint') }}</span></span>
+        </label>
+        {% for m in masters %}
+        <label class="choice master" data-category="{{ m.category }}">
+          <input type="radio" name="master" value="{{ m.id }}" data-name="{{ L(m, 'name') }}" {{ 'checked' if form.master == m.id }}>
+          <span class="choice-body"><strong>{{ L(m, 'name') }}</strong><span class="muted">{{ category_info(m.category).name }}</span></span>
+        </label>
+        {% endfor %}
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend><span class="step">3</span>{{ t('book.step_time') }}</legend>
+      <label class="day-field">{{ t('book.date') }}
+        <input type="date" name="day" id="day" value="{{ form.day }}" min="{{ min_day }}" max="{{ max_day }}" required>
+      </label>
+      <div id="slots" class="slots" aria-live="polite">
+        {% for s in slots %}
+        <label class="slot"><input type="radio" name="time" value="{{ s }}" {{ 'checked' if form.time == s }}><span>{{ s }}</span></label>
+        {% else %}<p class="muted slots-note">{{ t('book.slots_hint') }}</p>{% endfor %}
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend><span class="step">4</span>{{ t('book.step_contacts') }}</legend>
+      <div class="row">
+        <label>{{ t('book.name') }}<input name="name" value="{{ form.name }}" autocomplete="name" required></label>
+        <label>{{ t('book.phone') }}<input name="phone" type="tel" inputmode="tel" value="{{ form.phone }}" placeholder="+996 555 123 456" autocomplete="tel" required></label>
+      </div>
+      <label>{{ t('book.note') }}<textarea name="note" rows="2" placeholder="{{ t('book.note_ph') }}">{{ form.note }}</textarea></label>
+    </fieldset>
+
+    <div class="summary" id="summary" aria-live="polite">
+      <p class="muted">{{ t('book.summary') }}</p>
+      <p><strong id="sum-service">{{ t('book.summary_none') }}</strong></p>
+      <p id="sum-meta" class="muted"></p>
+      <p class="price big" id="sum-price"></p>
+    </div>
+    <button class="btn full" type="submit">{{ t('book.submit') }}</button>
+  </form>
+</section>
+{% endblock %}

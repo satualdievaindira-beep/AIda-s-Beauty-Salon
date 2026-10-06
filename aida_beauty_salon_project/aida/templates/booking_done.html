@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}{{ t('done.title') }}{% endblock %}
+{% block content %}
+<section class="section narrow">
+  <div class="ticket">
+    <p class="eyebrow">{{ t('done.title') }}</p>
+    <h1>{{ t('done.title') }}</h1>
+    <p class="lead">{{ t('done.lead', name=b.name, date=(b.day | ldate), time=(b.start_min | hm)) }}</p>
+    <dl class="details">
+      <div><dt>{{ t('done.service') }}</dt><dd>{{ b.service_ky if lang == 'ky' and b.service_ky else b.service_ru }}, {{ b.duration }} {{ t('minutes') }}</dd></div>
+      <div><dt>{{ t('done.master') }}</dt><dd>{{ b.master_ky if lang == 'ky' and b.master_ky else b.master_ru }}</dd></div>
+      <div><dt>{{ t('done.price') }}</dt><dd>{{ b.price }} {{ t('currency') }}, {{ t('done.price_note') }}</dd></div>
+      <div><dt>{{ t('done.code') }}</dt><dd class="code">{{ b.code }}</dd></div>
+    </dl>
+    <p class="muted">{{ t('done.keep') }}</p>
+    <div class="actions">
+      <a class="btn wa" href="{{ wa_text_link }}" target="_blank" rel="noopener">{{ t('done.wa') }}</a>
+      <a class="btn ghost" href="{{ url_for('lookup') }}">{{ t('done.manage') }}</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

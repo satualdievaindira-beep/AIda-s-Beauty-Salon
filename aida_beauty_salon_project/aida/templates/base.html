@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="{{ lang }}" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{% block title %}{{ t('site.tagline') }}{% endblock %} | {{ site.name }}</title>
+  <meta name="description" content="{% block description %}{{ t('site.description') }}{% endblock %}">
+  <meta name="theme-color" content="#F8F5F1">
+  <meta property="og:title" content="{{ site.name }}">
+  <meta property="og:description" content="{{ t('site.description') }}">
+  <meta property="og:image" content="{{ site.logo_url }}">
+  <link rel="icon" href="{{ site.logo_url }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap&subset=cyrillic,cyrillic-ext" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v={{ asset_v }}">
+  <script type="application/ld+json">{{ {
+    "@context": "https://schema.org", "@type": "BeautySalon", "name": site.name,
+    "image": site.logo_url, "telephone": site.phone, "hasMap": site.map_url,
+    "address": {"@type": "PostalAddress", "addressLocality": site.city, "addressCountry": "KG"}
+  } | tojson }}</script>
+</head>
+<body>
+<a class="skip" href="#main">{{ t('nav.menu') }}</a>
+
+<header class="site-header" id="top">
+  <a class="brand" href="{{ url_for('index') }}" aria-label="{{ site.name }}">
+    <img class="brand-logo" src="{{ site.logo_url }}" alt="{{ t('aria.logo') }}" width="46" height="46">
+    <span class="brand-name">Aida's <em>Beauty Salon</em></span>
+  </a>
+  <nav id="nav" class="nav" aria-label="{{ t('nav.menu') }}">
+    <a href="{{ url_for('index') }}">{{ t('nav.home') }}</a>
+    <a href="{{ url_for('services') }}">{{ t('nav.services') }}</a>
+    <a href="{{ url_for('reviews') }}">{{ t('nav.reviews') }}</a>
+    <a href="{{ url_for('contact') }}">{{ t('nav.contacts') }}</a>
+    <a href="{{ url_for('lookup') }}">{{ t('nav.lookup') }}</a>
+    {% if is_admin %}<a href="{{ url_for('admin_dashboard') }}">Админка</a>{% endif %}
+    <a class="btn small nav-cta" href="{{ url_for('booking') }}">{{ t('nav.book') }}</a>
+  </nav>
+  <div class="header-tools">
+    <div class="lang" role="group" aria-label="{{ t('aria.lang') }}">
+      {% for code, label in langs %}
+      <a href="{{ url_for('set_language', code=code) }}" {% if code == lang %}aria-current="true"{% endif %} hreflang="{{ code }}">{{ label }}</a>
+      {% endfor %}
+    </div>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav" aria-label="{{ t('aria.menu') }}"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main id="main">
+  {% with msgs = get_flashed_messages(with_categories=true) %}
+  {% if msgs %}<div class="flashes" role="status">
+    {% for cat, msg in msgs %}<p class="flash {{ cat }}">{{ msg }}</p>{% endfor %}
+  </div>{% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <div class="footer-brand">
+    <img src="{{ site.logo_url }}" alt="" width="64" height="64">
+    <div>
+      <strong>{{ site.name }}</strong>
+      <p class="muted">{{ site.city }} · {{ site.hours }}</p>
+    </div>
+  </div>
+  <div class="footer-links">
+    <a href="{{ site.wa }}" target="_blank" rel="noopener">{{ t('cta.whatsapp') }}</a>
+    <a href="{{ site.tel }}">{{ site.phone }}</a>
+    <a href="{{ site.map_url }}" target="_blank" rel="noopener">{{ t('cta.map') }}</a>
+    {% if is_admin %}
+    <form method="post" action="{{ url_for('admin_logout') }}" class="inline">
+      <input type="hidden" name="_csrf" value="{{ csrf_token() }}"><button class="link-btn">{{ t('footer.logout') }}</button>
+    </form>
+    {% else %}<a href="{{ url_for('admin_login') }}">{{ t('footer.staff') }}</a>{% endif %}
+  </div>
+  <p class="muted copy">&copy; {{ year }} {{ site.name }}. {{ t('footer.rights') }}.</p>
+</footer>
+
+{% block bottom_bar %}
+<div class="action-bar" role="navigation">
+  <a class="ab wa" href="{{ site.wa }}" target="_blank" rel="noopener">{{ t('cta.wa_short') }}</a>
+  <a class="ab" href="{{ site.tel }}">{{ t('cta.call') }}</a>
+  <a class="ab primary" href="{{ url_for('booking') }}">{{ t('nav.book') }}</a>
+</div>
+{% endblock %}
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script src="{{ url_for('static', filename='js/app.js') }}?v={{ asset_v }}" defer></script>
+</body>
+</html>

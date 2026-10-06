@@ -1,0 +1,27 @@
+{% extends 'admin/base.html' %}
+{% block title %}Сводка{% endblock %}
+{% block admin %}
+<h1>Сводка</h1>
+<div class="stats">
+  <div class="stat"><span>{{ stats.today }}</span>записей на сегодня</div>
+  <div class="stat"><span>{{ stats.new }}</span>новых, ждут подтверждения</div>
+  <div class="stat"><span>{{ stats.revenue }}</span>сом за 7 дней (выполненные)</div>
+  <div class="stat"><span>{{ stats.unread }}</span>непрочитанных сообщений</div>
+</div>
+<div class="two-col">
+  <div>
+    <h2>Сегодня</h2>
+    <div class="table-wrap"><table class="table"><tbody>
+      {% for r in schedule %}
+      <tr><td>{{ r.start_min | hm }}</td><td>{{ r.name }}<br><span class="muted">{{ r.phone }}</span></td><td>{{ r.service_name }}</td><td>{{ r.master_name }}</td><td>{{ statuses[r.status] }}</td></tr>
+      {% else %}<tr><td>На сегодня записей нет.</td></tr>{% endfor %}
+    </tbody></table></div>
+  </div>
+  <div>
+    <h2>Популярные услуги</h2>
+    <div class="table-wrap"><table class="table"><tbody>
+      {% for x in top %}<tr><td>{{ x.name }}</td><td>{{ x.cnt }}</td></tr>{% else %}<tr><td>Данных пока нет.</td></tr>{% endfor %}
+    </tbody></table></div>
+  </div>
+</div>
+{% endblock %}

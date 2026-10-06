@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}{{ t('contact.title') }}{% endblock %}
+{% block content %}
+<section class="section">
+  <h1>{{ t('contact.title') }}</h1>
+  <div class="contact-grid">
+    <div class="panel">
+      <dl class="contact-list">
+        <div><dt>{{ t('contact.address') }}</dt><dd>{{ t('contact.address_value') }}</dd></div>
+        <div><dt>{{ t('contact.hours') }}</dt><dd>{{ site.hours }}</dd></div>
+        <div><dt>{{ t('contact.manager') }}</dt><dd><a href="{{ site.tel }}">{{ site.phone }}</a></dd></div>
+      </dl>
+      <div class="actions">
+        <a class="btn" href="{{ site.map_url }}" target="_blank" rel="noopener">{{ t('cta.map') }}</a>
+        <a class="btn wa" href="{{ site.wa }}" target="_blank" rel="noopener">{{ t('cta.whatsapp') }}</a>
+      </div>
+      <p class="muted">{{ t('contact.fast') }}</p>
+    </div>
+    <div class="panel">
+      <h2>{{ t('contact.write') }}</h2>
+      <form method="post" class="form" novalidate>
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+        <label>{{ t('book.name') }}<input name="name" value="{{ form.name }}" required></label>
+        <label>{{ t('contact.email') }}<input name="email" type="email" value="{{ form.email }}" required></label>
+        <label>{{ t('contact.message') }}<textarea name="body" rows="4" required>{{ form.body }}</textarea></label>
+        <button class="btn" type="submit">{{ t('contact.send') }}</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

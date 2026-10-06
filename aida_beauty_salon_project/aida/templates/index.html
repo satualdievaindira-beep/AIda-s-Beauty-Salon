@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import quote with context %}
+{% block content %}
+
+<section class="hero">
+  <div class="hero-copy">
+    <p class="eyebrow">{{ site.city }} · {{ t('site.tagline') }}</p>
+    <h1>{{ t('hero.title') }}</h1>
+    <p class="lead">{{ t('hero.lead') }}</p>
+    <div class="actions">
+      <a class="btn" href="{{ url_for('booking') }}">{{ t('cta.book_now') }}</a>
+      <a class="btn wa" href="{{ site.wa }}" target="_blank" rel="noopener">{{ t('cta.whatsapp') }}</a>
+    </div>
+    <ul class="facts">
+      <li>{{ t('hero.fact_dirs') }}</li>
+      <li>{{ site.hours }}</li>
+      <li>{{ t('hero.fact_lang') }}</li>
+    </ul>
+  </div>
+  <div class="hero-art" aria-hidden="true">
+    <div class="ring ring-1"></div>
+    <div class="ring ring-2"></div>
+    <img src="{{ site.logo_url }}" alt="" width="420" height="420">
+  </div>
+</section>
+
+<section class="section" id="directions">
+  <div class="section-head">
+    <h2>{{ t('home.cats.title') }}</h2>
+    <p class="lead">{{ t('home.cats.lead') }}</p>
+  </div>
+  <div class="cat-grid">
+    {% for g in groups %}
+    <a class="cat-card reveal" href="{{ url_for('services') }}#{{ g.cat.key }}">
+      <span class="cat-num">{{ '%02d' % loop.index }}</span>
+      <h3>{{ g.cat.name }}</h3>
+      <p>{{ g.cat.desc }}</p>
+      <span class="cat-meta">
+        <span>{{ t('cat.count', n=g.rows|length) }}</span>
+        {% if g.rows %}<span class="price">{{ price_label(g.min_price, true) }}</span>{% endif %}
+      </span>
+    </a>
+    {% endfor %}
+  </div>
+  <p class="center"><a class="btn ghost" href="{{ url_for('services') }}">{{ t('cta.all_services') }}</a></p>
+</section>
+
+<section class="section dark">
+  <div class="inner">
+    <h2>{{ t('home.steps.title') }}</h2>
+    <ol class="steps">
+      <li class="reveal"><span class="step-n">1</span><h3>{{ t('home.step1.t') }}</h3><p>{{ t('home.step1.d') }}</p></li>
+      <li class="reveal"><span class="step-n">2</span><h3>{{ t('home.step2.t') }}</h3><p>{{ t('home.step2.d') }}</p></li>
+      <li class="reveal"><span class="step-n">3</span><h3>{{ t('home.step3.t') }}</h3><p>{{ t('home.step3.d') }}</p></li>
+    </ol>
+    <p><a class="btn light" href="{{ url_for('booking') }}">{{ t('cta.choose_time') }}</a></p>
+  </div>
+</section>
+
+<section class="section">
+  <h2>{{ t('home.why.title') }}</h2>
+  <div class="why-grid">
+    {% for n in (1, 2, 3, 4) %}
+    <div class="why reveal">
+      <h3>{{ t('home.why%d.t' % n) }}</h3>
+      <p class="muted">{{ t('home.why%d.d' % n) }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% if reviews %}
+<section class="section sand">
+  <div class="inner">
+    <div class="section-head row-head">
+      <h2>{{ t('home.reviews.title') }}</h2>
+      <a class="link" href="{{ url_for('reviews') }}">{{ t('home.reviews.all') }}</a>
+    </div>
+    <div class="quote-grid">{% for r in reviews %}{{ quote(r) }}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section">
+  <div class="visit">
+    <div>
+      <h2>{{ t('home.visit.title') }}</h2>
+      <p class="lead">{{ t('home.visit.lead') }}</p>
+      <div class="actions">
+        <a class="btn" href="{{ site.map_url }}" target="_blank" rel="noopener">{{ t('cta.map') }}</a>
+        <a class="btn wa" href="{{ site.wa }}" target="_blank" rel="noopener">{{ t('cta.whatsapp') }}</a>
+      </div>
+    </div>
+    <dl class="contact-list">
+      <div><dt>{{ t('contact.address') }}</dt><dd>{{ t('contact.address_value') }}</dd></div>
+      <div><dt>{{ t('contact.hours') }}</dt><dd>{{ site.hours }}</dd></div>
+      <div><dt>{{ t('contact.manager') }}</dt><dd><a href="{{ site.tel }}">{{ site.phone }}</a></dd></div>
+    </dl>
+  </div>
+</section>
+{% endblock %}

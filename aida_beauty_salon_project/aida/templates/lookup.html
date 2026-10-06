@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}{{ t('lookup.title') }}{% endblock %}
+{% block content %}
+<section class="section narrow">
+  <h1>{{ t('lookup.title') }}</h1>
+  <form method="post" class="form" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <label>{{ t('lookup.code') }}<input name="code" maxlength="6" placeholder="K7M2QX" required autocapitalize="characters" autocomplete="off"></label>
+    <label>{{ t('lookup.phone') }}<input name="phone" type="tel" inputmode="tel" required></label>
+    <button class="btn" type="submit">{{ t('lookup.find') }}</button>
+  </form>
+  {% if b %}
+  <hr>
+  <h2>{{ b.code }}</h2>
+  <dl class="details">
+    <div><dt>{{ t('lookup.when') }}</dt><dd>{{ b.day | ldate }}, {{ b.start_min | hm }}</dd></div>
+    <div><dt>{{ t('done.service') }}</dt><dd>{{ b.service_ky if lang == 'ky' and b.service_ky else b.service_ru }}</dd></div>
+    <div><dt>{{ t('done.master') }}</dt><dd>{{ b.master_ky if lang == 'ky' and b.master_ky else b.master_ru }}</dd></div>
+    <div><dt>{{ t('lookup.status') }}</dt><dd>{{ t('status.' ~ b.status) }}</dd></div>
+  </dl>
+  {% if cancellable %}
+  <form method="post" action="{{ url_for('lookup_cancel') }}">
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <button class="btn ghost" type="submit" data-confirm="{{ t('lookup.cancel_confirm') }}">{{ t('lookup.cancel') }}</button>
+  </form>
+  {% endif %}
+  {% endif %}
+</section>
+{% endblock %}

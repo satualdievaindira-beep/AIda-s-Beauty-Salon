@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import service_row with context %}
+{% block title %}{{ t('services.title') }}{% endblock %}
+{% block content %}
+<section class="section">
+  <h1>{{ t('services.title') }}</h1>
+  <p class="lead">{{ t('services.lead') }}</p>
+  <nav class="chips sticky" aria-label="{{ t('nav.services') }}">
+    {% for g in groups %}<a class="chip" href="#{{ g.cat.key }}" data-spy="{{ g.cat.key }}">{{ g.cat.name }}</a>{% endfor %}
+  </nav>
+  {% for g in groups %}
+  <section class="price-block" id="{{ g.cat.key }}">
+    <header>
+      <span class="cat-num">{{ '%02d' % loop.index }}</span>
+      <div><h2>{{ g.cat.name }}</h2><p class="muted">{{ g.cat.desc }}</p></div>
+    </header>
+    {% for s in g.rows %}{{ service_row(s) }}{% else %}<p class="empty">{{ t('services.empty') }}</p>{% endfor %}
+  </section>
+  {% endfor %}
+</section>
+{% endblock %}

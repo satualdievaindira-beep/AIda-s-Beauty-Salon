@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<section class="section narrow center">
+  <p class="eyebrow">{{ t('error.label', code=code) }}</p>
+  <h1>{{ title }}</h1>
+  <p class="lead">{{ text }}</p>
+  <a class="btn" href="{{ url_for('index') }}">{{ t('cta.back_home') }}</a>
+</section>
+{% endblock %}

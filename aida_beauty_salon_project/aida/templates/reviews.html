@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import quote with context %}
+{% block title %}{{ t('reviews.title') }}{% endblock %}
+{% block content %}
+<section class="section narrow">
+  <h1>{{ t('reviews.title') }}</h1>
+  {% if stats.cnt %}<p class="lead">{{ t('reviews.avg', avg=stats.avg, n=stats.cnt) }}</p>{% endif %}
+  {% for r in items %}{{ quote(r) }}{% else %}<p class="empty">{{ t('reviews.empty') }}</p>{% endfor %}
+  <h2>{{ t('reviews.form_title') }}</h2>
+  <form method="post" class="form" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <div class="row">
+      <label>{{ t('book.name') }}<input name="name" value="{{ form.name }}" required></label>
+      <label>{{ t('reviews.rating') }}
+        <select name="rating">{% for n in [5, 4, 3, 2, 1] %}<option value="{{ n }}" {{ 'selected' if form.rating == n }}>{{ n }}</option>{% endfor %}</select>
+      </label>
+    </div>
+    <label>{{ t('reviews.text') }}<textarea name="body" rows="4" required>{{ form.body }}</textarea></label>
+    <button class="btn" type="submit">{{ t('reviews.send') }}</button>
+  </form>
+</section>
+{% endblock %}

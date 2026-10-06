@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block bottom_bar %}{% endblock %}
+{% block content %}
+<section class="admin">
+  <nav class="subnav" aria-label="Админка">
+    <a href="{{ url_for('admin_dashboard') }}">Сводка</a>
+    <a href="{{ url_for('admin_bookings') }}">Записи</a>
+    <a href="{{ url_for('admin_services') }}">Услуги</a>
+    <a href="{{ url_for('admin_masters') }}">Мастера</a>
+    <a href="{{ url_for('admin_inbox') }}">Сообщения и отзывы</a>
+  </nav>
+  {% block admin %}{% endblock %}
+</section>
+{% endblock %}
